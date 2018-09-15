@@ -36,7 +36,7 @@ class RootViewController : UITableViewController
         super.loadView()
         self.title = "Mobile SDK Sample App"
     
-        let request = RestClient.sharedInstance().buildQueryRequest(soql: "SELECT Name FROM User LIMIT 10")
+        let request = RestClient.sharedInstance().buildQueryRequest(soql: "SELECT Name FROM User LIMIT 100")
         RestClient.sharedInstance().send(request: request, onFailure: { (error, urlResponse) in
             SFSDKLogger.sharedInstance().log(type(of:self), level:.debug, message:"Error invoking: \(request)")
         }) { [weak self] (response, urlResponse) in
