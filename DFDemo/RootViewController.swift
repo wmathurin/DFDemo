@@ -68,6 +68,7 @@ class RootViewController : UITableViewController
             SmartSyncLogger.log(type(of:self), level:.debug, message:"Error: \(error)")
         }
     }
+
     // MARK: - Table view data source
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
