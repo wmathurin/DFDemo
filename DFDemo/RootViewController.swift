@@ -25,10 +25,14 @@
 import Foundation
 import UIKit
 import SalesforceSDKCore
+import SmartStore
+import SmartSync
 
 class RootViewController : UITableViewController
 {
     var dataRows = [Dictionary<String, Any>]()
+    var store: SmartStore?
+    var syncManager: SyncManager?
     
     // MARK: - View lifecycle
     override func loadView()
@@ -36,18 +40,12 @@ class RootViewController : UITableViewController
         super.loadView()
         self.title = "Mobile SDK Sample App"
     
-        let request = RestClient.sharedInstance().buildQueryRequest(soql: "SELECT Name FROM User LIMIT 100")
-        RestClient.sharedInstance().send(request: request, onFailure: { (error, urlResponse) in
-            SFSDKLogger.sharedInstance().log(type(of:self), level:.debug, message:"Error invoking: \(request)")
-        }) { [weak self] (response, urlResponse) in
-            if let jsonResponse = response as? Dictionary<String,Any> {
-                if let result = jsonResponse ["records"] as? [Dictionary<String,Any>] {
-                    DispatchQueue.main.async {
-                        self?.dataRows = result
-                        self?.tableView.reloadData()
-                    }
-                }
-            }
+        store = SmartStore.sharedStore(name: SmartStore.defaultStoreName)
+        syncManager = SyncManager.sharedInstance(store:store!)
+        
+        // Run (delta)sync if possible
+        _ = syncManager?.reSync(syncName: "syncDownUsers") { (syncState) in
+            // TBD
         }
     }
     
