@@ -25,6 +25,7 @@
 import Foundation
 import UIKit
 import SalesforceSDKCore
+import SmartSync
 
 
 class AppDelegate : UIResponder, UIApplicationDelegate
@@ -35,7 +36,7 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     init()
     {
         super.init()
-        SalesforceSDK.initializeSDK()
+        SmartSyncSDKManager.initializeSDK()
         AuthHelper.registerBlock(forCurrentUserChangeNotifications: { [weak self] in
             self?.resetViewState {
                 self?.setupRootViewController()
@@ -68,6 +69,8 @@ class AppDelegate : UIResponder, UIApplicationDelegate
         //loginViewConfig.navBarFont = UIFont(name: "Helvetica", size: 16.0)
         //UserAccountManager.sharedInstance().loginViewControllerConfig = loginViewConfig
         AuthHelper.loginIfRequired { [weak self] in
+            SmartSyncSDKManager.shared().setupUserStoreFromDefaultConfig()
+            SmartSyncSDKManager.shared().setupUserSyncsFromDefaultConfig()
             self?.setupRootViewController()
         }
        
