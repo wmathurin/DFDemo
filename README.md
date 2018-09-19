@@ -85,12 +85,12 @@ In `loadView()`, call `self.loadFromStore()`  at startup and when sync completes
 
 ```swift
         // Run (delta)sync if possible
-        _ = syncManager?.Promises
-            .reSync(syncName: "syncDownUsers")
-            .done { [unowned self] (_) in
-                self.loadFromStore();
+        _ = syncManager?.reSync(syncName: "syncDownUsers") { (syncState) in
+            if (syncState.isDone()) {
+                self.loadFromStore()
             }
-        self.loadFromStore();
+        }
+        self.loadFromStore()
 ```
 
 Add the `loadFromStore()` method.
@@ -104,7 +104,7 @@ Add the `loadFromStore()` method.
         do {
             let records = try self.store?.query(querySpec: querySpec, pageIndex: 0)
             self.dataRows = (records as! [[NSString]]).map({ row in
-                return ["Name": row[0]];
+                return ["Name": row[0]]
             })
             
             DispatchQueue.main.async(execute: {
